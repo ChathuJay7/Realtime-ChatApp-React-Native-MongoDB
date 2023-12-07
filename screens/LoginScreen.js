@@ -58,8 +58,8 @@ const LoginScreen = () => {
                 marginVertical: 10,
                 width: 300,
               }}
-              placeholderTextColor={"black"}
-              placeholder="enter Your Email"
+              placeholderTextColor={"#b8b3a9"}
+              placeholder="Enter Your Email"
             />
           </View>
 
@@ -79,8 +79,8 @@ const LoginScreen = () => {
                 marginVertical: 10,
                 width: 300,
               }}
-              placeholderTextColor={"black"}
-              placeholder="Passowrd"
+              placeholderTextColor={"#b8b3a9"}
+              placeholder="Enter Your Passowrd"
             />
           </View>
 
@@ -108,8 +108,7 @@ const LoginScreen = () => {
             </Text>
           </TouchableOpacity>
 
-          <View
-            
+          <View 
             style={{
               marginTop: 15,
               display: "flex",
