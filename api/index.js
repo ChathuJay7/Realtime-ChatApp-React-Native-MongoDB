@@ -5,12 +5,13 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv")
+const cors = require("cors");
 
 const authRouter = require("./routing/auth-routes"); // Change this line
 
 const app = express();
 const port = 8000;
-const cors = require("cors");
+
 
 app.use(cors());
 

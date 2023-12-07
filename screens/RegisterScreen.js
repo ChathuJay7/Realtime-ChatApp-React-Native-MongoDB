@@ -1,4 +1,5 @@
 import {
+  Alert,
   KeyboardAvoidingView,
   Pressable,
   StyleSheet,
@@ -9,6 +10,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState("");
@@ -16,6 +18,37 @@ const RegisterScreen = () => {
   const [password, setPassword] = useState("");
   const [image, setImage] = useState("");
   const navigation = useNavigation();
+
+  const handleRegister = () => {
+    const user = {
+      name: name,
+      email: email,
+      password: password,
+      image: image,
+    };
+
+    // send a POST  request to the backend API to register the user
+    axios
+      .post("http://192.168.8.154:8000/auth/register", user)
+      .then((response) => {
+        console.log(response.data);
+        Alert.alert(
+          "Registration successful",
+          "You have been registered Successfully"
+        );
+        setName("");
+        setEmail("");
+        setPassword("");
+        setImage("");
+      })
+      .catch((error) => {
+        Alert.alert(
+          "Registration Error",
+          "An error occurred while registering"
+        );
+        console.log("registration failed", error);
+      });
+  };
 
   return (
     <View
@@ -126,7 +159,7 @@ const RegisterScreen = () => {
           </View>
 
           <TouchableOpacity
-            //onPress={handleRegister}
+            onPress={handleRegister}
             style={{
               width: 200,
               backgroundColor: "#4A55A2",
