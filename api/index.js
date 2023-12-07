@@ -6,17 +6,23 @@ const LocalStrategy = require("passport-local").Strategy;
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv")
 
+const authRouter = require("./routing/auth-routes"); // Change this line
+
 const app = express();
 const port = 8000;
 const cors = require("cors");
+
 app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(passport.initialize());
 
+app.use(express.json());
+app.use("/auth", authRouter);
+
 dotenv.config();
-// connections
+
 mongoose
   .connect(`${process.env.MONGODB_URL}`)
   .then(() => {
