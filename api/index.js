@@ -8,6 +8,7 @@ const dotenv = require("dotenv")
 const cors = require("cors");
 
 const authRouter = require("./routing/auth-routes"); // Change this line
+const userRouter = require("./routing/user-routes");
 
 const app = express();
 const port = 8000;
@@ -21,6 +22,7 @@ app.use(passport.initialize());
 
 app.use(express.json());
 app.use("/auth", authRouter);
+app.use("/users", userRouter);
 
 dotenv.config();
 
