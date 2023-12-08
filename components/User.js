@@ -1,7 +1,29 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import React, { useContext, useState } from "react";
+import { UserType } from "../UserContecx";
 
-const User = ({item}) => {
+const User = ({ item }) => {
+    const { userId, setUserId } = useContext(UserType);
+    const [requestSent, setRequestSent] = useState(false);
+
+    const sendFriendRequest = async (currentUserId, selectedUserId) => {
+        try {
+          const response = await fetch("http:///192.168.8.154:8000/users/friend-request", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ currentUserId, selectedUserId }),
+          });
+    
+          if (response.ok) {
+            setRequestSent(true);
+          }
+        } catch (error) {
+          console.log("error message", error);
+        }
+    };
+
   return (
     <TouchableOpacity
       style={{ flexDirection: "row", alignItems: "center", marginVertical: 10 }}
@@ -22,6 +44,20 @@ const User = ({item}) => {
         <Text style={{ fontWeight: "bold" }}>{item?.name}</Text>
         <Text style={{ marginTop: 4, color: "gray" }}>{item?.email}</Text>
       </View>
+
+      <TouchableOpacity
+        onPress={() => sendFriendRequest(userId, item._id)}
+        style={{
+          backgroundColor: "#567189",
+          padding: 10,
+          borderRadius: 6,
+          width: 105,
+        }}
+      >
+        <Text style={{ textAlign: "center", color: "white", fontSize: 13 }}>
+          Add Friend
+        </Text>
+      </TouchableOpacity>
       {/* {userFriends.includes(item._id) ? (
         <TouchableOpacity
           style={{
