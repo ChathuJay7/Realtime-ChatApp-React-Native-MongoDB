@@ -1,15 +1,18 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import { Pressable } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React from "react";
+import { Pressable } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const UserChat = ({ item }) => {
+  const navigation = useNavigation();
+
   return (
-    <Pressable
-    //   onPress={() =>
-    //     navigation.navigate("Messages", {
-    //       recepientId: item._id,
-    //     })
-    //   }
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("Messages", {
+          recepientId: item._id,
+        })
+      }
       style={{
         flexDirection: "row",
         alignItems: "center",
@@ -34,7 +37,9 @@ const UserChat = ({ item }) => {
             {lastMessage?.message}
           </Text>
         )} */}
-        <Text style={{ marginTop: 3, color: "gray", fontWeight: "500" }}>Last Message</Text>
+        <Text style={{ marginTop: 3, color: "gray", fontWeight: "500" }}>
+          Last Message
+        </Text>
       </View>
 
       <View>
@@ -43,10 +48,10 @@ const UserChat = ({ item }) => {
           11.19 p.m
         </Text>
       </View>
-    </Pressable>
-  )
-}
+    </TouchableOpacity>
+  );
+};
 
-export default UserChat
+export default UserChat;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});
