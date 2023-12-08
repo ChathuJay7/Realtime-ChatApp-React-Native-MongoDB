@@ -7,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode, { jwtDecode } from 'jwt-decode';
 import "core-js/stable/atob";
 import axios from "axios";
+import User from "../components/User";
 
 
 const HomeScreen = () => {
@@ -33,33 +34,35 @@ const HomeScreen = () => {
   }, []);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const token = await AsyncStorage.getItem('authToken');
-        console.log(token)
-        if (token) {
-          const decodedToken = jwtDecode(token);
-          const userId = decodedToken.userId;
-          setUserId(userId);
-          console.log(userId)
-
-          const response = await axios.get(`http://192.168.8.154:8000/users/${userId}`);
-          setUsers(response.data);
-        }
-      } catch (error) {
-        console.log('Error retrieving users', error);
-      }
-    };
-
     fetchUsers();
   }, []);
+
+  const fetchUsers = async () => {
+    try {
+      const token = await AsyncStorage.getItem('authToken');
+
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        const userId = decodedToken.userId;
+        setUserId(userId);
+
+        const response = await axios.get(`http://192.168.8.154:8000/users/${userId}`);
+        setUsers(response.data);
+      }
+    } catch (error) {
+      console.log('Error retrieving users', error);
+    }
+  };
 
   console.log("users", users);
 
   return (
     <View>
-      <Text>HomeScreen</Text>
-      <TouchableOpacity onPress={() => AsyncStorage.removeItem('authToken')}><Text>Logout</Text></TouchableOpacity>
+      <View style={{ padding: 10 }}>
+        {users.map((item, index) => (
+          <User key={index} item={item} />
+        ))}
+      </View>
     </View>
   );
 };
