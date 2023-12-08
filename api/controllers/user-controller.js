@@ -35,7 +35,28 @@ const sendFriendRequest = async (req, res) => {
   }
 };
 
+
+//endpoint to show all the friend-requests of a particular user
+const friendRequestsOfUser = async (req, res) => {
+    try {
+      const { userId } = req.params;
+  
+      //fetch the user document based on the User id
+      const user = await User.findById(userId)
+        .populate("freindRequests", "name email image")
+        .lean();
+  
+      const freindRequests = user.freindRequests;
+  
+      res.status(200).json(freindRequests);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  };
+
 module.exports = {
   getAllOtherUsers,
   sendFriendRequest,
+  friendRequestsOfUser
 };
