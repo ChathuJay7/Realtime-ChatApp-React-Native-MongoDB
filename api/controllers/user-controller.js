@@ -35,28 +35,58 @@ const sendFriendRequest = async (req, res) => {
   }
 };
 
-
 //endpoint to show all the friend-requests of a particular user
 const friendRequestsOfUser = async (req, res) => {
-    try {
-      const { userId } = req.params;
-  
-      //fetch the user document based on the User id
-      const user = await User.findById(userId)
-        .populate("freindRequests", "name email image")
-        .lean();
-  
-      const freindRequests = user.freindRequests;
-  
-      res.status(200).json(freindRequests);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: "Internal Server Error" });
-    }
-  };
+  try {
+    const { userId } = req.params;
+
+    //fetch the user document based on the User id
+    const user = await User.findById(userId)
+      .populate("freindRequests", "name email image")
+      .lean();
+
+    const freindRequests = user.freindRequests;
+
+    res.status(200).json(freindRequests);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+//endpoint to accept a friend-request of a particular person
+const acceptFriendRequest = async (req, res) => {
+  try {
+    const { senderId, recepientId } = req.body;
+
+    //retrieve the documents of sender and the recipient
+    const sender = await User.findById(senderId);
+    const recepient = await User.findById(recepientId);
+
+    sender.friends.push(recepientId);
+    recepient.friends.push(senderId);
+
+    recepient.freindRequests = recepient.freindRequests.filter(
+      (request) => request.toString() !== senderId.toString()
+    );
+
+    sender.sentFriendRequests = sender.sentFriendRequests.filter(
+      (request) => request.toString() !== recepientId.toString
+    );
+
+    await sender.save();
+    await recepient.save();
+
+    res.status(200).json({ message: "Friend Request accepted successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 module.exports = {
   getAllOtherUsers,
   sendFriendRequest,
-  friendRequestsOfUser
+  friendRequestsOfUser,
+  acceptFriendRequest
 };
