@@ -38,6 +38,28 @@ const multer = require("multer");
 //   }
 // };
 
+// app.get("/messages/:senderId/:recepientId", async (req, res) => {
+//endpoint to fetch the messages between two users in the chatRoom
+const fetchMessagesInSingleChat = async (req, res) => {
+    try {
+      const { senderId, recepientId } = req.params;
+  
+      const messages = await Message.find({
+        $or: [
+          { senderId: senderId, recepientId: recepientId },
+          { senderId: recepientId, recepientId: senderId },
+        ],
+      }).populate("senderId", "_id name");
+  
+      res.json(messages);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  };
+  
+
 module.exports = {
     //sendMessage
+    fetchMessagesInSingleChat
 };
