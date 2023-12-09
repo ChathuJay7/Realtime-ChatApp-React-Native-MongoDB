@@ -6,9 +6,11 @@ const LocalStrategy = require("passport-local").Strategy;
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv")
 const cors = require("cors");
+const multer = require("multer");
 
 const authRouter = require("./routing/auth-routes"); // Change this line
 const userRouter = require("./routing/user-routes");
+const messageRouter = require("./routing/message-routes");
 
 const app = express();
 const port = 8000;
@@ -23,6 +25,7 @@ app.use(passport.initialize());
 app.use(express.json());
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
+app.use("/message", messageRouter);
 
 dotenv.config();
 

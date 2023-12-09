@@ -99,12 +99,29 @@ const getAllAcceptedFriends = async (req, res) => {
       console.error(error);
       res.status(500).json({ error: "Internal Server Error" });
     }
-  };
+};
+
+
+///endpoint to get the userDetails to design the chat Room header
+const getRecepientDetails= async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    //fetch the user data from the user ID
+    const recepientId = await User.findById(userId);
+
+    res.json(recepientId);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 module.exports = {
   getAllOtherUsers,
   sendFriendRequest,
   friendRequestsOfUser,
   acceptFriendRequest,
-  getAllAcceptedFriends
+  getAllAcceptedFriends,
+  getRecepientDetails
 };
