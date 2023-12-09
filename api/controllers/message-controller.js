@@ -21,15 +21,18 @@ const storage = multer.diskStorage({
 //endpoint to post Messages and store it in the backend
 const sendMessage = async (req, res) => {
     try {
-      const { senderId, recepientId, messageType, messageText } = req.body;
-  
-      // Modify the middleware chain to include the file upload handling
+      
+      // Modif;y the middleware chain to include the file upload handling
       upload.single("imageFile")(req, res, async (err) => {
         if (err) {
           // Handle multer error
           console.log(err);
           return res.status(500).json({ error: "File upload error" });
         }
+
+        const { senderId, recepientId, messageType, messageText } = req.body;
+  
+      console.log("Received request", req.body)
   
         const newMessage = new Message({
           senderId,
