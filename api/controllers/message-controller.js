@@ -68,7 +68,27 @@ const fetchMessagesInSingleChat = async (req, res) => {
   }
 };
 
+
+//endpoint to delete the messages!
+const deleteMessages = async (req, res) => {
+    try {
+      const { messages } = req.body;
+  
+      if (!Array.isArray(messages) || messages.length === 0) {
+        return res.status(400).json({ message: "invalid req body!" });
+      }
+  
+      await Message.deleteMany({ _id: { $in: messages } });
+  
+      res.json({ message: "Message deleted successfully" });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Internal Server" });
+    }
+};
+
 module.exports = {
   sendMessage,
   fetchMessagesInSingleChat,
+  deleteMessages
 };

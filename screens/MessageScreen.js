@@ -21,7 +21,8 @@ const MessageScreen = () => {
   const [selectedImage, setSelectedImage] = useState("");
   const [recepientData, setRecepientData] = useState();
   const [messages, setMessages] = useState([]);
-
+  const [selectedMessages, setSelectedMessages] = useState([]);
+  
   const { userId, setUserId } = useContext(UserType);
 
   const navigation = useNavigation();
