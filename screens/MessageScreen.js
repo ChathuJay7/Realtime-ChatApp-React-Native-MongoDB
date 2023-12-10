@@ -19,6 +19,7 @@ const MessageScreen = () => {
   const [message, setMessage] = useState("");
   const [selectedImage, setSelectedImage] = useState("");
   const [recepientData, setRecepientData] = useState();
+  const [messages, setMessages] = useState([]);
 
   const { userId, setUserId } = useContext(UserType);
 
@@ -72,10 +73,12 @@ const MessageScreen = () => {
       console.log("error in sending the message", error);
     }
   };
+  
 
 
   useEffect(() => {
     fetchRecepientData();
+    fetchMessages();
   }, []);
 
   const fetchRecepientData = async () => {
@@ -91,7 +94,24 @@ const MessageScreen = () => {
     }
   };
 
-  console.log(recepientData)
+  const fetchMessages = async () => {
+    try {
+      const response = await fetch(
+        `http://192.168.8.154:8000/message/${userId}/${recepientId}`
+      );
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessages(data);
+      } else {
+        console.log("error showing messags", response.status.message);
+      }
+    } catch (error) {
+      console.log("error fetching messages", error);
+    }
+  };
+
+  console.log(messages)
 
   useLayoutEffect(() => {
     navigation.setOptions({
