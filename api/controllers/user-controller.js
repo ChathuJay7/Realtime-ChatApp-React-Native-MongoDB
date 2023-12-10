@@ -102,7 +102,7 @@ const getAllAcceptedFriends = async (req, res) => {
 };
 
 
-///endpoint to get the userDetails to design the chat Room header
+//endpoint to get the userDetails to design the chat Room header
 const getRecepientDetails= async (req, res) => {
   try {
     const { userId } = req.params;
@@ -117,11 +117,28 @@ const getRecepientDetails= async (req, res) => {
   }
 };
 
+///friend-requests/sent/:userId
+//endpoint to get send friend requests
+const alreadySendFriendRequests = async(req,res) => {
+  try{
+    const {userId} = req.params;
+    const user = await User.findById(userId).populate("sentFriendRequests","name email image").lean();
+
+    const sentFriendRequests = user.sentFriendRequests;
+
+    res.json(sentFriendRequests);
+  } catch(error){
+    console.log("error",error);
+    res.status(500).json({ error: "Internal Server" });
+  }
+}
+
 module.exports = {
   getAllOtherUsers,
   sendFriendRequest,
   friendRequestsOfUser,
   acceptFriendRequest,
   getAllAcceptedFriends,
-  getRecepientDetails
+  getRecepientDetails,
+  alreadySendFriendRequests
 };
