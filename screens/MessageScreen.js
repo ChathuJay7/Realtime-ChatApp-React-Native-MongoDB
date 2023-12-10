@@ -195,13 +195,16 @@ const MessageScreen = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: "",
+      headerStyle: {
+        backgroundColor: "#18585c",
+      },
       headerLeft: () => (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
           <Ionicons
             onPress={() => navigation.goBack()}
             name="arrow-back"
             size={24}
-            color="black"
+            color="white"
           />
 
           {selectedMessages.length > 0 ? (
@@ -211,7 +214,7 @@ const MessageScreen = () => {
               </Text>
             </View>
           ) : (
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap:8 }}>
               <Image
                 style={{
                   width: 30,
@@ -222,7 +225,7 @@ const MessageScreen = () => {
                 source={{ uri: recepientData?.image }}
               />
 
-              <Text style={{ marginLeft: 5, fontSize: 15, fontWeight: "bold" }}>
+              <Text style={{ marginLeft: 5, fontSize: 15, fontWeight: "bold", color:"white" }}>
                 {recepientData?.name}
               </Text>
             </View>
@@ -247,7 +250,7 @@ const MessageScreen = () => {
   }, [recepientData, selectedMessages]);
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#F0F0F0" }}>
+    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#edf6f7" }}>
       <ScrollView ref={scrollViewRef} contentContainerStyle={{flexGrow:1}} onContentSizeChange={handleContentSizeChange}>
 
       {messages.map((item, index) => {
@@ -261,7 +264,7 @@ const MessageScreen = () => {
                   item?.senderId?._id === userId
                     ? {
                         alignSelf: "flex-end",
-                        backgroundColor: "#DCF8C6",
+                        backgroundColor: "#8bcccc",
                         padding: 8,
                         maxWidth: "60%",
                         borderRadius: 7,
@@ -321,7 +324,7 @@ const MessageScreen = () => {
                   item?.senderId?._id === userId
                     ? {
                         alignSelf: "flex-end",
-                        backgroundColor: "#DCF8C6",
+                        backgroundColor: "#8bcccc",
                         padding: 8,
                         maxWidth: "60%",
                         borderRadius: 7,
@@ -371,8 +374,8 @@ const MessageScreen = () => {
           alignItems: "center",
           paddingHorizontal: 10,
           paddingVertical: 10,
-          borderTopWidth: 1,
-          borderTopColor: "#dddddd",
+          //borderTopWidth: 1,
+          backgroundColor:"#8bcccc",
           marginBottom: showEmojiSelector ? 0 : 25,
         }}
       >
@@ -418,7 +421,7 @@ const MessageScreen = () => {
         <Pressable
           onPress={() => handleSend("text")}
           style={{
-            backgroundColor: "#007bff",
+            backgroundColor: "#18585c",
             paddingVertical: 8,
             paddingHorizontal: 12,
             borderRadius: 20,

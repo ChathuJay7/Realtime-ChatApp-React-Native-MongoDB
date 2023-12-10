@@ -1,5 +1,6 @@
 import {
   Alert,
+  Image,
   KeyboardAvoidingView,
   Pressable,
   StyleSheet,
@@ -12,6 +13,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Logo } from "../assets";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
@@ -62,7 +64,7 @@ const LoginScreen = () => {
     <View
       style={{
         flex: 1,
-        backgroundColor: "white",
+        backgroundColor: "#edf6f7",
         padding: 10,
         alignItems: "center",
         justifyContent: "center",
@@ -71,23 +73,23 @@ const LoginScreen = () => {
       <KeyboardAvoidingView>
         <View
           style={{
-            marginTop: 100,
             justifyContent: "center",
             alignItems: "center",
           }}
         >
-          <Text style={{ color: "#4A55A2", fontSize: 17, fontWeight: "600" }}>
+          <Image source={Logo} style={{ height:70, width:70 }} resizeMode="contain" />
+          <Text style={{ color: "#1d6a6e", fontSize: 17, fontWeight: "900" }}>
             Sign In
           </Text>
 
-          <Text style={{ fontSize: 17, fontWeight: "600", marginTop: 15 }}>
-            Sign In to Your Account
+          <Text style={{ color: "#1d6a6e", fontSize: 17, fontWeight: "600", marginTop: 15 }}>
+            Sign In To Your Account
           </Text>
         </View>
 
         <View style={{ marginTop: 50 }}>
           <View>
-            <Text style={{ fontSize: 18, fontWeight: "600", color: "gray" }}>
+            <Text style={{ fontSize: 18, fontWeight: "600", color: "#085a5e" }}>
               Email
             </Text>
 
@@ -96,18 +98,19 @@ const LoginScreen = () => {
               onChangeText={(text) => setEmail(text)}
               style={{
                 fontSize: email ? 18 : 18,
-                borderBottomColor: "gray",
+                borderBottomColor: "#085a5e",
                 borderBottomWidth: 1,
                 marginVertical: 10,
                 width: 300,
+                color: "#027378"
               }}
-              placeholderTextColor={"#b8b3a9"}
+              placeholderTextColor={"#03848a"}
               placeholder="Enter Your Email"
             />
           </View>
 
           <View style={{ marginTop: 10 }}>
-            <Text style={{ fontSize: 18, fontWeight: "600", color: "gray" }}>
+            <Text style={{ fontSize: 18, fontWeight: "600", color: "#085a5e" }}>
               Password
             </Text>
 
@@ -117,12 +120,13 @@ const LoginScreen = () => {
               secureTextEntry={true}
               style={{
                 fontSize: email ? 18 : 18,
-                borderBottomColor: "gray",
+                borderBottomColor: "#085a5e",
                 borderBottomWidth: 1,
                 marginVertical: 10,
                 width: 300,
+                color: "#027378"
               }}
-              placeholderTextColor={"#b8b3a9"}
+              placeholderTextColor={"#03848a"}
               placeholder="Enter Your Passowrd"
             />
           </View>
@@ -131,7 +135,7 @@ const LoginScreen = () => {
             onPress={handleLogin}
             style={{
               width: 200,
-              backgroundColor: "#4A55A2",
+              backgroundColor: "#1d6a6e",
               padding: 15,
               marginTop: 50,
               marginLeft: "auto",
@@ -164,7 +168,7 @@ const LoginScreen = () => {
               Dont't have an account?{" "}
             </Text>
             <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-              <Text style={{ color: "#4A55A2", fontWeight: "bold" }}>
+              <Text style={{ color: "#1d6a6e", fontWeight: "bold" }}>
                 Sign Up
               </Text>
             </TouchableOpacity>

@@ -1,7 +1,9 @@
 import {
   Alert,
+  Image,
   KeyboardAvoidingView,
   Pressable,
+  SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
@@ -11,6 +13,7 @@ import {
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
+import { Logo } from "../assets";
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState("");
@@ -51,10 +54,10 @@ const RegisterScreen = () => {
   };
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
-        backgroundColor: "white",
+        backgroundColor: "#edf6f7",
         padding: 10,
         alignItems: "center",
         justifyContent: "center",
@@ -67,18 +70,19 @@ const RegisterScreen = () => {
             alignItems: "center",
           }}
         >
-          <Text style={{ color: "#4A55A2", fontSize: 17, fontWeight: "600" }}>
+          <Image source={Logo} style={{ height:70, width:70 }} resizeMode="contain" />
+          <Text style={{ color: "#1d6a6e", fontSize: 17, fontWeight: "900" }}>
             Register
           </Text>
 
-          <Text style={{ fontSize: 17, fontWeight: "600", marginTop: 15 }}>
-            Register To your Account
+          <Text style={{ color: "#1d6a6e", fontSize: 17, fontWeight: "600", marginTop: 15 }}>
+            Register To Your Account
           </Text>
         </View>
 
-        <View style={{ marginTop: 50 }}>
+        <View style={{ marginTop: 30 }}>
           <View style={{ marginTop: 10 }}>
-            <Text style={{ fontSize: 18, fontWeight: "600", color: "gray" }}>
+            <Text style={{ fontSize: 18, fontWeight: "600", color: "#085a5e" }}>
               Name
             </Text>
 
@@ -87,18 +91,18 @@ const RegisterScreen = () => {
               onChangeText={(text) => setName(text)}
               style={{
                 fontSize: email ? 18 : 18,
-                borderBottomColor: "gray",
+                borderBottomColor: "#085a5e",
                 borderBottomWidth: 1,
                 marginVertical: 10,
                 width: 300,
               }}
-              placeholderTextColor={"#b8b3a9"}
+              placeholderTextColor={"#03848a"}
               placeholder="Enter your name"
             />
           </View>
 
           <View>
-            <Text style={{ fontSize: 18, fontWeight: "600", color: "gray" }}>
+            <Text style={{ fontSize: 18, fontWeight: "600", color: "#085a5e" }}>
               Email
             </Text>
 
@@ -107,18 +111,18 @@ const RegisterScreen = () => {
               onChangeText={(text) => setEmail(text)}
               style={{
                 fontSize: email ? 18 : 18,
-                borderBottomColor: "gray",
+                borderBottomColor: "#085a5e",
                 borderBottomWidth: 1,
                 marginVertical: 10,
                 width: 300,
               }}
-              placeholderTextColor={"#b8b3a9"}
+              placeholderTextColor={"#03848a"}
               placeholder="Enter Your Email"
             />
           </View>
 
           <View style={{ marginTop: 10 }}>
-            <Text style={{ fontSize: 18, fontWeight: "600", color: "gray" }}>
+            <Text style={{ fontSize: 18, fontWeight: "600", color: "#085a5e" }}>
               Password
             </Text>
 
@@ -128,18 +132,18 @@ const RegisterScreen = () => {
               secureTextEntry={true}
               style={{
                 fontSize: email ? 18 : 18,
-                borderBottomColor: "gray",
+                borderBottomColor: "#085a5e",
                 borderBottomWidth: 1,
                 marginVertical: 10,
                 width: 300,
               }}
-              placeholderTextColor={"#b8b3a9"}
+              placeholderTextColor={"#03848a"}
               placeholder="Enter Your Passowrd"
             />
           </View>
 
           <View style={{ marginTop: 10 }}>
-            <Text style={{ fontSize: 18, fontWeight: "600", color: "gray" }}>
+            <Text style={{ fontSize: 18, fontWeight: "600", color: "#085a5e" }}>
               Image
             </Text>
 
@@ -148,13 +152,13 @@ const RegisterScreen = () => {
               onChangeText={(text) => setImage(text)}
               style={{
                 fontSize: email ? 18 : 18,
-                borderBottomColor: "gray",
+                borderBottomColor: "#085a5e",
                 borderBottomWidth: 1,
                 marginVertical: 10,
                 width: 300,
               }}
-              placeholderTextColor={"#b8b3a9"}
-              placeholder="Image"
+              placeholderTextColor={"#03848a"}
+              placeholder="Add Image URL"
             />
           </View>
 
@@ -162,9 +166,9 @@ const RegisterScreen = () => {
             onPress={handleRegister}
             style={{
               width: 200,
-              backgroundColor: "#4A55A2",
+              backgroundColor: "#1d6a6e",
               padding: 15,
-              marginTop: 50,
+              marginTop: 30,
               marginLeft: "auto",
               marginRight: "auto",
               borderRadius: 6,
@@ -196,12 +200,12 @@ const RegisterScreen = () => {
               Already Have an account?{" "}
             </Text>
             <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-              <Text style={{ color: "#4A55A2", fontWeight:"bold" }}>Sign In</Text>
+              <Text style={{ color: "#1d6a6e", fontWeight:"bold" }}>Sign In</Text>
             </TouchableOpacity>
           </View>
         </View>
       </KeyboardAvoidingView>
-    </View>
+    </SafeAreaView>
   );
 };
 
