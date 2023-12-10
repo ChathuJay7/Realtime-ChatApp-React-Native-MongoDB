@@ -117,7 +117,7 @@ const getRecepientDetails= async (req, res) => {
   }
 };
 
-///friend-requests/sent/:userId
+
 //endpoint to get send friend requests
 const alreadySendFriendRequests = async(req,res) => {
   try{
@@ -133,6 +133,26 @@ const alreadySendFriendRequests = async(req,res) => {
   }
 }
 
+
+const getUserFriends = (req,res) => {
+  try{
+    const {userId} = req.params;
+
+    User.findById(userId).populate("friends").then((user) => {
+      if(!user){
+        return res.status(404).json({message: "User not found"})
+      }
+
+      const friendIds = user.friends.map((friend) => friend._id);
+
+      res.status(200).json(friendIds);
+    })
+  } catch(error){
+    console.log("error",error);
+    res.status(500).json({message:"internal server error"})
+  }
+}
+
 module.exports = {
   getAllOtherUsers,
   sendFriendRequest,
@@ -140,5 +160,6 @@ module.exports = {
   acceptFriendRequest,
   getAllAcceptedFriends,
   getRecepientDetails,
-  alreadySendFriendRequests
+  alreadySendFriendRequests,
+  getUserFriends
 };
