@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
-import { Entypo, Feather, Ionicons } from "@expo/vector-icons";
+import { Entypo, Feather, FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { ScrollView } from "react-native";
 import EmojiSelector from "react-native-emoji-selector";
 import { UserType } from "../UserContecx";
@@ -22,7 +22,7 @@ const MessageScreen = () => {
   const [recepientData, setRecepientData] = useState();
   const [messages, setMessages] = useState([]);
   const [selectedMessages, setSelectedMessages] = useState([]);
-  
+
   const { userId, setUserId } = useContext(UserType);
 
   const navigation = useNavigation();
@@ -132,6 +132,49 @@ const MessageScreen = () => {
     }
   };
 
+
+  const handleSelectMessage = (message) => {
+    //check if the message is already selected
+    const isSelected = selectedMessages.includes(message._id);
+
+    if (isSelected) {
+      setSelectedMessages((previousMessages) =>
+        previousMessages.filter((id) => id !== message._id)
+      );
+    } else {
+      setSelectedMessages((previousMessages) => [
+        ...previousMessages,
+        message._id,
+      ]);
+    }
+  };
+
+  console.log("Selected Messages : ", selectedMessages)
+
+  const deleteMessages = async (messageIds) => {
+    try {
+      const response = await fetch("http://192.168.8.154:8000/message/deleteMessages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ messages: messageIds }),
+      });
+
+      if (response.ok) {
+        setSelectedMessages((prevSelectedMessages) =>
+        prevSelectedMessages.filter((id) => !messageIds.includes(id))
+      );
+
+        fetchMessages();
+      } else {
+        console.log("error deleting messages", response.status);
+      }
+    } catch (error) {
+      console.log("error deleting messages", error);
+    }
+  };
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: "",
@@ -144,13 +187,13 @@ const MessageScreen = () => {
             color="black"
           />
 
-          {/* {selectedMessages.length > 0 ? (
+          {selectedMessages.length > 0 ? (
             <View>
               <Text style={{ fontSize: 16, fontWeight: "500" }}>
                 {selectedMessages.length}
               </Text>
             </View>
-          ) : ( */}
+          ) : (
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Image
                 style={{
@@ -166,25 +209,25 @@ const MessageScreen = () => {
                 {recepientData?.name}
               </Text>
             </View>
-          {/* )} */}
+          )}
         </View>
       ),
-      // headerRight: () =>
-      //   selectedMessages.length > 0 ? (
-      //     <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-      //       <Ionicons name="md-arrow-redo-sharp" size={24} color="black" />
-      //       <Ionicons name="md-arrow-undo" size={24} color="black" />
-      //       <FontAwesome name="star" size={24} color="black" />
-      //       <MaterialIcons
-      //         onPress={() => deleteMessages(selectedMessages)}
-      //         name="delete"
-      //         size={24}
-      //         color="black"
-      //       />
-      //     </View>
-      //   ) : null,
+      headerRight: () =>
+        selectedMessages.length > 0 ? (
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+            <Ionicons name="md-arrow-redo-sharp" size={24} color="black" />
+            <Ionicons name="md-arrow-undo" size={24} color="black" />
+            <FontAwesome name="star" size={24} color="black" />
+            <MaterialIcons
+              onPress={() => deleteMessages(selectedMessages)}
+              name="delete"
+              size={24}
+              color="black"
+            />
+          </View>
+        ) : null,
     });
-  }, [recepientData]);
+  }, [recepientData, selectedMessages]);
 
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#F0F0F0" }}>
@@ -192,7 +235,7 @@ const MessageScreen = () => {
 
       {messages.map((item, index) => {
           if (item.messageType === "text") {
-            //const isSelected = selectedMessages.includes(item._id);
+            const isSelected = selectedMessages.includes(item._id);
             return (
               <Pressable
                 onLongPress={() => handleSelectMessage(item)}
@@ -216,13 +259,13 @@ const MessageScreen = () => {
                         maxWidth: "60%",
                       },
 
-                  //isSelected && { width: "100%", backgroundColor: "#F0FFFF" },
+                  isSelected && { width: "100%", backgroundColor: "#F0FFFF" },
                 ]}
               >
                 <Text
                   style={{
                     fontSize: 15,
-                    //textAlign: isSelected ? "right" : "left",
+                    textAlign: isSelected ? "right" : "left",
                   }}
                 >
                   {item?.message}
