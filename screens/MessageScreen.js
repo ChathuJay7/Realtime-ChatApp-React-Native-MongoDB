@@ -13,6 +13,7 @@ import { ScrollView } from "react-native";
 import EmojiSelector from "react-native-emoji-selector";
 import { UserType } from "../UserContecx";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
 
 const MessageScreen = () => {
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
@@ -67,7 +68,7 @@ const MessageScreen = () => {
         setMessage("");
         setSelectedImage("");
 
-        //fetchMessages();
+        fetchMessages();
       }
     } catch (error) {
       console.log("error in sending the message", error);
@@ -111,7 +112,24 @@ const MessageScreen = () => {
     }
   };
 
-  console.log(messages)
+  const formatTime = (time) => {
+    const options = { hour: "numeric", minute: "numeric" };
+    return new Date(time).toLocaleString("en-US", options);
+  };
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    console.log(result);
+    if (!result.canceled) {
+      handleSend("image", result.uri);
+    }
+  };
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -169,7 +187,122 @@ const MessageScreen = () => {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#F0F0F0" }}>
-      <ScrollView></ScrollView>
+      <ScrollView>
+
+      {messages.map((item, index) => {
+          if (item.messageType === "text") {
+            //const isSelected = selectedMessages.includes(item._id);
+            return (
+              <Pressable
+                onLongPress={() => handleSelectMessage(item)}
+                key={index}
+                style={[
+                  item?.senderId?._id === userId
+                    ? {
+                        alignSelf: "flex-end",
+                        backgroundColor: "#DCF8C6",
+                        padding: 8,
+                        maxWidth: "60%",
+                        borderRadius: 7,
+                        margin: 10,
+                      }
+                    : {
+                        alignSelf: "flex-start",
+                        backgroundColor: "white",
+                        padding: 8,
+                        margin: 10,
+                        borderRadius: 7,
+                        maxWidth: "60%",
+                      },
+
+                  //isSelected && { width: "100%", backgroundColor: "#F0FFFF" },
+                ]}
+              >
+                <Text
+                  style={{
+                    fontSize: 15,
+                    //textAlign: isSelected ? "right" : "left",
+                  }}
+                >
+                  {item?.message}
+                </Text>
+                <Text
+                  style={{
+                    textAlign: "right",
+                    fontSize: 13,
+                    color: "gray",
+                    marginTop: 5,
+                  }}
+                >
+                  {formatTime(item.timeStamp)}
+                </Text>
+              </Pressable>
+            );
+          }
+
+          if (item.messageType === "image") {
+            // const baseUrl = "F:/Programming/Mobile Development/React Native/Sujan Anand/realtime-chat/api/files/";
+            // const imageUrl = item.imageUrl.replace(/\\/g, '/');
+            // const filename = imageUrl.split("/").pop();
+            // const source = { uri: `${baseUrl}${filename}` };
+            const baseUrl = "/api/files/";
+            const imageUrl = item.imageUrl.replace(/\\/g, '/');
+            const filename = imageUrl.split("/").pop();
+            const source = { uri: `${baseUrl}${filename}` };
+
+
+            console.log(source)
+          
+            return (
+              <Pressable
+                key={index}
+                style={[
+                  item?.senderId?._id === userId
+                    ? {
+                        alignSelf: "flex-end",
+                        backgroundColor: "#DCF8C6",
+                        padding: 8,
+                        maxWidth: "60%",
+                        borderRadius: 7,
+                        margin: 10,
+                      }
+                    : {
+                        alignSelf: "flex-start",
+                        backgroundColor: "white",
+                        padding: 8,
+                        margin: 10,
+                        borderRadius: 7,
+                        maxWidth: "60%",
+                      },
+                ]}
+              >
+                <View>
+                  <Image
+                    source={source}
+                    style={{ width: 200, height: 200, borderRadius: 7 }}
+                  />
+                  <Text
+                    style={{
+                      textAlign: "right",
+                      fontSize: 13,
+                      position: "absolute",
+                      right: 10,
+                      bottom: 7,
+                      color: "gray",
+                      marginTop: 5,
+                    }}
+                  >
+                    {formatTime(item?.timeStamp)}
+                  </Text>
+                </View>
+              </Pressable>
+            );
+          }
+          
+          
+        })}
+
+      </ScrollView>
 
       <View
         style={{
@@ -212,7 +345,7 @@ const MessageScreen = () => {
           }}
         >
           <Entypo
-            //onPress={pickImage}
+            onPress={pickImage}
             name="camera"
             size={24}
             color="gray"
