@@ -7,7 +7,7 @@ import {
   TextInput,
   View,
 } from "react-native";
-import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
+import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Entypo, Feather, FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { ScrollView } from "react-native";
 import EmojiSelector from "react-native-emoji-selector";
@@ -22,6 +22,8 @@ const MessageScreen = () => {
   const [recepientData, setRecepientData] = useState();
   const [messages, setMessages] = useState([]);
   const [selectedMessages, setSelectedMessages] = useState([]);
+
+  const scrollViewRef = useRef(null);
 
   const { userId, setUserId } = useContext(UserType);
 
@@ -175,6 +177,21 @@ const MessageScreen = () => {
     }
   };
 
+
+  useEffect(() => {
+    scrollToBottom()
+  },[]);
+
+  const scrollToBottom = () => {
+      if(scrollViewRef.current){
+          scrollViewRef.current.scrollToEnd({animated:false})
+      }
+  }
+
+  const handleContentSizeChange = () => {
+    scrollToBottom();
+  }
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: "",
@@ -231,7 +248,7 @@ const MessageScreen = () => {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#F0F0F0" }}>
-      <ScrollView>
+      <ScrollView ref={scrollViewRef} contentContainerStyle={{flexGrow:1}} onContentSizeChange={handleContentSizeChange}>
 
       {messages.map((item, index) => {
           if (item.messageType === "text") {
