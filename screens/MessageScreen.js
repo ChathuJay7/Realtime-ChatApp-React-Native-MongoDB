@@ -350,14 +350,14 @@ const MessageScreen = () => {
                 // const source = { uri: `${baseUrl}${filename}` };
 
 
-                const baseUrl ="/Users/sujananand/Build/messenger-project/api/files/";
-                const imageUrl = item.imageUrl;
-                const filename = imageUrl.split("/").pop();
-                const source = { uri: baseUrl + filename };
-                // const baseUrl = "/api/files/";
-                // const imageUrl = item.imageUrl.replace(/\\/g, "/");
+                // const baseUrl ='http://192.168.8.154:8000/message/files';
+                // const imageUrl = item.imageUrl;
                 // const filename = imageUrl.split("/").pop();
-                // const source =  `${baseUrl}${filename}` ;
+                // const source = { uri: baseUrl + filename };
+                const baseUrl = "http://192.168.8.154:8000/message/files/";
+                const imageUrl = item.imageUrl.replace(/\\/g, "/");
+                const filename = imageUrl.split("/").pop();
+                const source =  { uri: `${baseUrl}${filename}` };;
 
                 console.log(source);
 

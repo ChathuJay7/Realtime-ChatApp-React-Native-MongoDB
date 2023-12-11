@@ -1,5 +1,23 @@
 const User = require("../models/User");
 
+
+
+//endpoint to get the userDetails to design the chat Room header
+const getLoggedInUserDetails= async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    //fetch the user data from the user ID
+    const user = await User.findById(userId);
+
+    res.json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
 //endpoint to access all the users except the user who's is currently logged in!
 const getAllOtherUsers = (req, res) => {
   const loggedInUserId = req.params.userId;
@@ -133,7 +151,7 @@ const alreadySendFriendRequests = async(req,res) => {
   }
 }
 
-
+//endpoint to get friends of a user
 const getUserFriends = (req,res) => {
   try{
     const {userId} = req.params;
@@ -154,6 +172,7 @@ const getUserFriends = (req,res) => {
 }
 
 module.exports = {
+  getLoggedInUserDetails,
   getAllOtherUsers,
   sendFriendRequest,
   friendRequestsOfUser,
@@ -161,5 +180,5 @@ module.exports = {
   getAllAcceptedFriends,
   getRecepientDetails,
   alreadySendFriendRequests,
-  getUserFriends
+  getUserFriends,
 };

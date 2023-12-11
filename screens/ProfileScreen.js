@@ -1,8 +1,6 @@
 import {
-  Alert,
   Image,
   KeyboardAvoidingView,
-  Pressable,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -10,47 +8,38 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
 import { Logo } from "../assets";
+import { UserType } from "../UserContecx";
 
-const RegisterScreen = () => {
+const ProfileScreen = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [image, setImage] = useState("");
   const navigation = useNavigation();
 
-  const handleRegister = () => {
-    const user = {
-      name: name,
-      email: email,
-      password: password,
-      image: image,
-    };
+  const { userId, setUserId } = useContext(UserType);
 
-    // send a POST  request to the backend API to register the user
-    axios
-      .post("http://192.168.8.154:8000/auth/register", user)
-      .then((response) => {
-        console.log(response.data);
-        Alert.alert(
-          "Registration successful",
-          "You have been registered Successfully"
-        );
-        setName("");
-        setEmail("");
-        setPassword("");
-        setImage("");
-      })
-      .catch((error) => {
-        Alert.alert(
-          "Registration Error",
-          "An error occurred while registering"
-        );
-        console.log("registration failed", error);
-      });
+  useEffect(() => {
+    fetchUsertData();
+  }, []);
+
+  const fetchUsertData = async () => {
+    try {
+      const response = await fetch(
+        `http://192.168.8.154:8000/users/recepient-details/${userId}`
+      );
+
+      const data = await response.json();
+      setName(data.name);
+      setEmail(data.email);
+      setPassword(data.password);
+      setImage(data.image);
+    } catch (error) {
+      console.log("error retrieving details", error);
+    }
   };
 
   return (
@@ -70,20 +59,25 @@ const RegisterScreen = () => {
             alignItems: "center",
           }}
         >
-          <Image source={Logo} style={{ height:70, width:70 }} resizeMode="contain" />
+          <Image
+            source={{ uri: image }}
+            style={{
+              width: 80,
+              height: 80,
+              borderRadius: 15,
+              resizeMode: "cover",
+              borderRadius: 50,
+            }}
+          />
           <Text style={{ color: "#1d6a6e", fontSize: 17, fontWeight: "900" }}>
-            Register
-          </Text>
-
-          <Text style={{ color: "#1d6a6e", fontSize: 17, fontWeight: "600", marginTop: 15 }}>
-            Register To Your Account
+            {name}
           </Text>
         </View>
 
         <View style={{ marginTop: 30 }}>
           <View style={{ marginTop: 10 }}>
             <Text style={{ fontSize: 18, fontWeight: "600", color: "#085a5e" }}>
-              Name <Text style={{color: "#b80059"}}>*</Text>
+              Name <Text style={{ color: "#b80059" }}>*</Text>
             </Text>
 
             <TextInput
@@ -103,7 +97,7 @@ const RegisterScreen = () => {
 
           <View>
             <Text style={{ fontSize: 18, fontWeight: "600", color: "#085a5e" }}>
-              Email <Text style={{color: "#b80059"}}>*</Text>
+              Email <Text style={{ color: "#b80059" }}>*</Text>
             </Text>
 
             <TextInput
@@ -123,7 +117,7 @@ const RegisterScreen = () => {
 
           <View style={{ marginTop: 10 }}>
             <Text style={{ fontSize: 18, fontWeight: "600", color: "#085a5e" }}>
-              Password <Text style={{color: "#b80059"}}>*</Text>
+              Password <Text style={{ color: "#b80059" }}>*</Text>
             </Text>
 
             <TextInput
@@ -163,7 +157,7 @@ const RegisterScreen = () => {
           </View>
 
           <TouchableOpacity
-            onPress={handleRegister}
+            //onPress={handleRegister}
             style={{
               width: 200,
               backgroundColor: "#1d6a6e",
@@ -182,33 +176,15 @@ const RegisterScreen = () => {
                 textAlign: "center",
               }}
             >
-              Register
+              Update
             </Text>
           </TouchableOpacity>
-
-          <View
-            
-            style={{
-                marginTop: 15,
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-          >
-            <Text style={{ textAlign: "center", color: "gray", fontSize: 16 }}>
-              Already Have an account?{" "}
-            </Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-              <Text style={{ color: "#1d6a6e", fontWeight:"bold" }}>Sign In</Text>
-            </TouchableOpacity>
-          </View>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
 
-export default RegisterScreen;
+export default ProfileScreen;
 
 const styles = StyleSheet.create({});

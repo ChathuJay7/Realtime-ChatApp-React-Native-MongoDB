@@ -70,6 +70,7 @@ const HomeScreen = () => {
             size={24}
             color="white"
           />
+          <AntDesign onPress={() => navigation.navigate("Profile")} name="user" size={24} color="white" />
           <MaterialIcons
             onPress={() => handleLogout()}
             name="logout"
@@ -154,7 +155,7 @@ const HomeScreen = () => {
             style={[styles.AndroidSafeArea, { backgroundColor: "#edf6f7" }]}
             showsVerticalScrollIndicator={false}
           >
-            <View style={{ padding: 10,  backgroundColor:"#e3fcf9" }}>
+            <View style={{ padding: 10, backgroundColor: "#e3fcf9" }}>
               {users.map((item, index) => (
                 <User key={index} item={item} />
               ))}
