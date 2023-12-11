@@ -1,5 +1,5 @@
 const express = require("express");
-const { getAllOtherUsers, sendFriendRequest, friendRequestsOfUser, acceptFriendRequest, getAllAcceptedFriends, getRecepientDetails, alreadySendFriendRequests, getUserFriends, getLoggedInUserDetails,  } = require("../controllers/user-controller");
+const { getAllOtherUsers, sendFriendRequest, friendRequestsOfUser, acceptFriendRequest, getAllAcceptedFriends, getRecepientDetails, alreadySendFriendRequests, getUserFriends, getLoggedInUserDetails, updateUserDetails,  } = require("../controllers/user-controller");
 
 
 const userRouter = express.Router();
@@ -13,5 +13,6 @@ userRouter.get("/accepted-friends/:userId", getAllAcceptedFriends);
 userRouter.get("/recepient-details/:userId", getRecepientDetails);
 userRouter.get("/sent-friend-requests/:userId", alreadySendFriendRequests);
 userRouter.get("/friends/:userId", getUserFriends);
+userRouter.put("/update-user/:userId", updateUserDetails);
 
 module.exports = userRouter;

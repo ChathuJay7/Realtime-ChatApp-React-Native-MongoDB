@@ -1,4 +1,5 @@
 import {
+    Alert,
   Image,
   KeyboardAvoidingView,
   SafeAreaView,
@@ -12,12 +13,13 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Logo } from "../assets";
 import { UserType } from "../UserContecx";
+import axios from "axios";
 
 const ProfileScreen = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(image);
   const navigation = useNavigation();
 
   const { userId, setUserId } = useContext(UserType);
@@ -40,6 +42,33 @@ const ProfileScreen = () => {
     } catch (error) {
       console.log("error retrieving details", error);
     }
+  };
+
+  const handleUpdateUser = () => {
+    const user = {
+      name: name,
+      //remail: email,
+      password: password,
+      image: image,
+    };
+
+    // send a POST  request to the backend API to register the user
+    axios
+      .put(`http://192.168.8.154:8000/users/update-user/${userId}`, user)
+      .then((response) => {
+        console.log(response.data);
+        Alert.alert(
+          "Updated successful",
+        );
+
+      })
+      .catch((error) => {
+        Alert.alert(
+          "Update Error",
+          "An error occurred while update"
+        );
+        console.log("Update failed", error);
+      });
   };
 
   return (
@@ -103,6 +132,7 @@ const ProfileScreen = () => {
             <TextInput
               value={email}
               onChangeText={(text) => setEmail(text)}
+              editable={false}
               style={{
                 fontSize: email ? 18 : 18,
                 borderBottomColor: "#085a5e",
@@ -157,7 +187,7 @@ const ProfileScreen = () => {
           </View>
 
           <TouchableOpacity
-            //onPress={handleRegister}
+            onPress={handleUpdateUser}
             style={{
               width: 200,
               backgroundColor: "#1d6a6e",
