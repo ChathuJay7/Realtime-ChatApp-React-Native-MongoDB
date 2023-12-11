@@ -21,23 +21,23 @@ const LoginScreen = () => {
   const navigation = useNavigation();
 
 
-  const checkLoginStatus = async () => {
-    try {
-      const token = await AsyncStorage.getItem("authToken");
+  // const checkLoginStatus = async () => {
+  //   try {
+  //     const token = await AsyncStorage.getItem("authToken");
 
-      if (token) {
-        navigation.replace("Home");
-      } else {
-        // token not found , show the login screen itself
-      }
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
+  //     if (token) {
+  //       navigation.replace("Home");
+  //     } else {
+  //       // token not found , show the login screen itself
+  //     }
+  //   } catch (error) {
+  //     console.log("error", error);
+  //   }
+  // };
 
-  useEffect(() => {
-    checkLoginStatus();
-  }, []);
+  // useEffect(() => {
+  //   checkLoginStatus();
+  // }, []);
 
   const handleLogin = () => {
     const user = {

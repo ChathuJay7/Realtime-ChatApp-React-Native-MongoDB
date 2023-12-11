@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Button,
   Image,
   ScrollView,
@@ -23,6 +24,7 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const { userId, setUserId } = useContext(UserType);
   const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleLogout = () => {
     AsyncStorage.removeItem("authToken");
@@ -36,8 +38,19 @@ const HomeScreen = () => {
         backgroundColor: "#18585c",
       },
       headerLeft: () => (
-        <View style={{ flexDirection: "row", alignItems: "center", justifyContent:"center", gap: 10 }}>
-          <Image source={Logo} style={{ height:25, width:25 }} resizeMode="contain" />
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 10,
+          }}
+        >
+          <Image
+            source={Logo}
+            style={{ height: 25, width: 25 }}
+            resizeMode="contain"
+          />
           <Text style={{ fontSize: 16, fontWeight: "bold", color: "white" }}>
             Chat App
           </Text>
@@ -85,6 +98,7 @@ const HomeScreen = () => {
           `http://192.168.8.154:8000/users/${userId}`
         );
         setUsers(response.data);
+        setIsLoading(false);
       }
     } catch (error) {
       console.log("Error retrieving users", error);
@@ -115,7 +129,7 @@ const HomeScreen = () => {
           User List
         </Text>
       </View>
-      <ScrollView
+      {/* <ScrollView
         style={[styles.AndroidSafeArea, { backgroundColor: "#edf6f7" }]}
         showsVerticalScrollIndicator={false}
       >
@@ -124,7 +138,30 @@ const HomeScreen = () => {
             <User key={index} item={item} />
           ))}
         </View>
-      </ScrollView>
+      </ScrollView> */}
+
+      {isLoading ? (
+        <>
+          <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            <ActivityIndicator size={"large"} color={"#43C651"} />
+          </View>
+        </>
+      ) : (
+        <>
+          <ScrollView
+            style={[styles.AndroidSafeArea, { backgroundColor: "#edf6f7" }]}
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={{ padding: 10,  backgroundColor:"#e3fcf9" }}>
+              {users.map((item, index) => (
+                <User key={index} item={item} />
+              ))}
+            </View>
+          </ScrollView>
+        </>
+      )}
     </View>
   );
 };

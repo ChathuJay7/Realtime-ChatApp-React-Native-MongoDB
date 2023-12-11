@@ -1,4 +1,12 @@
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { UserType } from "../UserContecx";
 import axios from "axios";
@@ -11,6 +19,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const FriendsScreen = () => {
   const { userId, setUserId } = useContext(UserType);
   const [friendRequests, setFriendRequests] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const navigation = useNavigation();
 
@@ -32,6 +41,7 @@ const FriendsScreen = () => {
         }));
 
         setFriendRequests(friendRequestsData);
+        setIsLoading(false);
         //setFriendRequests(response.data)
       }
     } catch (err) {
@@ -51,8 +61,19 @@ const FriendsScreen = () => {
         backgroundColor: "#18585c",
       },
       headerLeft: () => (
-        <View style={{ flexDirection: "row", alignItems: "center", justifyContent:"center", gap: 10 }}>
-          <Image source={Logo} style={{ height:25, width:25 }} resizeMode="contain" />
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 10,
+          }}
+        >
+          <Image
+            source={Logo}
+            style={{ height: 25, width: 25 }}
+            resizeMode="contain"
+          />
           <Text style={{ fontSize: 16, fontWeight: "bold", color: "white" }}>
             Chat App
           </Text>
@@ -84,19 +105,6 @@ const FriendsScreen = () => {
   }, []);
 
   return (
-    // <View style={{ padding: 10, marginHorizontal: 12 }}>
-    //   {friendRequests.length > 0 && <Text>Your Friend Requests!</Text>}
-
-    //   {friendRequests.map((item, index) => (
-    //     <FriendRequest
-    //       key={index}
-    //       item={item}
-    //       friendRequests={friendRequests}
-    //       setFriendRequests={setFriendRequests}
-    //     />
-    //   ))}
-    // </View>
-
     <View style={{ flex: 1, backgroundColor: "#edf6f7" }}>
       <View
         style={{
@@ -110,24 +118,53 @@ const FriendsScreen = () => {
       >
         <MaterialIcons name="people-outline" size={24} color="#1d6a6e" />
         <Text style={{ fontSize: 20, fontWeight: "bold", color: "#1d6a6e" }}>
-          {friendRequests.length > 0 && <Text>Friend Requests</Text>}
+          <Text>Friend Requests</Text>
         </Text>
       </View>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={[styles.AndroidSafeArea, { backgroundColor: "#edf6f7" }]}
-      >
-        <Pressable style={{ padding:10}}>
-          {friendRequests?.map((item, index) => (
-            <FriendRequest
-              key={index}
-              item={item}
-              friendRequests={friendRequests}
-              setFriendRequests={setFriendRequests}
-            />
-          ))}
-        </Pressable>
-      </ScrollView>
+
+      {isLoading ? (
+        <>
+          <View style={{flex:1, alignItems:"center", justifyContent:"center"}}>
+            <ActivityIndicator size={"large"} color={"#43C651"} />
+          </View>
+        </>
+      ) : (
+        <>
+          {friendRequests?.length > 0 ? (
+            <>
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                style={[styles.AndroidSafeArea, { backgroundColor: "#edf6f7" }]}
+              >
+                <Pressable style={{ padding: 10, backgroundColor:"#e3fcf9" }} >
+                  {friendRequests?.map((item, index) => (
+                    <FriendRequest
+                      key={index}
+                      item={item}
+                      friendRequests={friendRequests}
+                      setFriendRequests={setFriendRequests}
+                    />
+                  ))}
+                </Pressable>
+              </ScrollView>
+            </>
+          ) : (
+            <>
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Text style={{ textAlign: "center", fontSize: 20 }}>
+                  No Friend requests found
+                </Text>
+              </View>
+            </>
+          )}
+        </>
+      )}
     </View>
   );
 };

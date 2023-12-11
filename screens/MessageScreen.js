@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Image,
   KeyboardAvoidingView,
   Pressable,
@@ -7,8 +8,20 @@ import {
   TextInput,
   View,
 } from "react-native";
-import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Entypo, Feather, FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import React, {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+import {
+  Entypo,
+  Feather,
+  FontAwesome,
+  Ionicons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import { ScrollView } from "react-native";
 import EmojiSelector from "react-native-emoji-selector";
 import { UserType } from "../UserContecx";
@@ -22,6 +35,7 @@ const MessageScreen = () => {
   const [recepientData, setRecepientData] = useState();
   const [messages, setMessages] = useState([]);
   const [selectedMessages, setSelectedMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const scrollViewRef = useRef(null);
 
@@ -77,8 +91,6 @@ const MessageScreen = () => {
       console.log("error in sending the message", error);
     }
   };
-  
-
 
   useEffect(() => {
     fetchRecepientData();
@@ -107,6 +119,7 @@ const MessageScreen = () => {
 
       if (response.ok) {
         setMessages(data);
+        setIsLoading(false);
       } else {
         console.log("error showing messags", response.status.message);
       }
@@ -134,7 +147,6 @@ const MessageScreen = () => {
     }
   };
 
-
   const handleSelectMessage = (message) => {
     //check if the message is already selected
     const isSelected = selectedMessages.includes(message._id);
@@ -151,22 +163,25 @@ const MessageScreen = () => {
     }
   };
 
-  console.log("Selected Messages : ", selectedMessages)
+  console.log("Selected Messages : ", selectedMessages);
 
   const deleteMessages = async (messageIds) => {
     try {
-      const response = await fetch("http://192.168.8.154:8000/message/deleteMessages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ messages: messageIds }),
-      });
+      const response = await fetch(
+        "http://192.168.8.154:8000/message/deleteMessages",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ messages: messageIds }),
+        }
+      );
 
       if (response.ok) {
         setSelectedMessages((prevSelectedMessages) =>
-        prevSelectedMessages.filter((id) => !messageIds.includes(id))
-      );
+          prevSelectedMessages.filter((id) => !messageIds.includes(id))
+        );
 
         fetchMessages();
       } else {
@@ -177,20 +192,19 @@ const MessageScreen = () => {
     }
   };
 
-
   useEffect(() => {
-    scrollToBottom()
-  },[]);
+    scrollToBottom();
+  }, []);
 
   const scrollToBottom = () => {
-      if(scrollViewRef.current){
-          scrollViewRef.current.scrollToEnd({animated:false})
-      }
-  }
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: false });
+    }
+  };
 
   const handleContentSizeChange = () => {
     scrollToBottom();
-  }
+  };
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -214,7 +228,9 @@ const MessageScreen = () => {
               </Text>
             </View>
           ) : (
-            <View style={{ flexDirection: "row", alignItems: "center", gap:8 }}>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
+            >
               <Image
                 style={{
                   width: 30,
@@ -225,7 +241,14 @@ const MessageScreen = () => {
                 source={{ uri: recepientData?.image }}
               />
 
-              <Text style={{ marginLeft: 5, fontSize: 15, fontWeight: "bold", color:"white" }}>
+              <Text
+                style={{
+                  marginLeft: 5,
+                  fontSize: 15,
+                  fontWeight: "bold",
+                  color: "white",
+                }}
+              >
                 {recepientData?.name}
               </Text>
             </View>
@@ -235,14 +258,14 @@ const MessageScreen = () => {
       headerRight: () =>
         selectedMessages.length > 0 ? (
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-            <Ionicons name="md-arrow-redo-sharp" size={24} color="black" />
-            <Ionicons name="md-arrow-undo" size={24} color="black" />
-            <FontAwesome name="star" size={24} color="black" />
+            <Ionicons name="md-arrow-redo-sharp" size={24} color="white" />
+            <Ionicons name="md-arrow-undo" size={24} color="white" />
+            <FontAwesome name="star" size={24} color="white" />
             <MaterialIcons
               onPress={() => deleteMessages(selectedMessages)}
               name="delete"
               size={24}
-              color="black"
+              color="white"
             />
           </View>
         ) : null,
@@ -251,122 +274,142 @@ const MessageScreen = () => {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#edf6f7" }}>
-      <ScrollView ref={scrollViewRef} contentContainerStyle={{flexGrow:1}} onContentSizeChange={handleContentSizeChange}>
+      {isLoading ? (
+        <>
+          <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            <ActivityIndicator size={"large"} color={"#43C651"} />
+          </View>
+        </>
+      ) : (
+        <>
+          <ScrollView
+            ref={scrollViewRef}
+            contentContainerStyle={{ flexGrow: 1 }}
+            onContentSizeChange={handleContentSizeChange}
+          >
+            {messages.map((item, index) => {
+              if (item.messageType === "text") {
+                const isSelected = selectedMessages.includes(item._id);
+                return (
+                  <Pressable
+                    onLongPress={() => handleSelectMessage(item)}
+                    key={index}
+                    style={[
+                      item?.senderId?._id === userId
+                        ? {
+                            alignSelf: "flex-end",
+                            backgroundColor: "#8bcccc",
+                            padding: 8,
+                            maxWidth: "60%",
+                            borderRadius: 7,
+                            margin: 10,
+                          }
+                        : {
+                            alignSelf: "flex-start",
+                            backgroundColor: "white",
+                            padding: 8,
+                            margin: 10,
+                            borderRadius: 7,
+                            maxWidth: "60%",
+                          },
 
-      {messages.map((item, index) => {
-          if (item.messageType === "text") {
-            const isSelected = selectedMessages.includes(item._id);
-            return (
-              <Pressable
-                onLongPress={() => handleSelectMessage(item)}
-                key={index}
-                style={[
-                  item?.senderId?._id === userId
-                    ? {
-                        alignSelf: "flex-end",
-                        backgroundColor: "#8bcccc",
-                        padding: 8,
-                        maxWidth: "60%",
-                        borderRadius: 7,
-                        margin: 10,
-                      }
-                    : {
-                        alignSelf: "flex-start",
-                        backgroundColor: "white",
-                        padding: 8,
-                        margin: 10,
-                        borderRadius: 7,
-                        maxWidth: "60%",
+                      isSelected && {
+                        width: "100%",
+                        backgroundColor: "#F0FFFF",
                       },
-
-                  isSelected && { width: "100%", backgroundColor: "#F0FFFF" },
-                ]}
-              >
-                <Text
-                  style={{
-                    fontSize: 15,
-                    textAlign: isSelected ? "right" : "left",
-                  }}
-                >
-                  {item?.message}
-                </Text>
-                <Text
-                  style={{
-                    textAlign: "right",
-                    fontSize: 13,
-                    color: "gray",
-                    marginTop: 5,
-                  }}
-                >
-                  {formatTime(item.timeStamp)}
-                </Text>
-              </Pressable>
-            );
-          }
-
-          if (item.messageType === "image") {
-            // const baseUrl = "F:/Programming/Mobile Development/React Native/Sujan Anand/realtime-chat/api/files/";
-            // const imageUrl = item.imageUrl.replace(/\\/g, '/');
-            // const filename = imageUrl.split("/").pop();
-            // const source = { uri: `${baseUrl}${filename}` };
-            const baseUrl = "/api/files/";
-            const imageUrl = item.imageUrl.replace(/\\/g, '/');
-            const filename = imageUrl.split("/").pop();
-            const source = { uri: `${baseUrl}${filename}` };
-
-
-            console.log(source)
-          
-            return (
-              <Pressable
-                key={index}
-                style={[
-                  item?.senderId?._id === userId
-                    ? {
-                        alignSelf: "flex-end",
-                        backgroundColor: "#8bcccc",
-                        padding: 8,
-                        maxWidth: "60%",
-                        borderRadius: 7,
-                        margin: 10,
-                      }
-                    : {
-                        alignSelf: "flex-start",
-                        backgroundColor: "white",
-                        padding: 8,
-                        margin: 10,
-                        borderRadius: 7,
-                        maxWidth: "60%",
-                      },
-                ]}
-              >
-                <View>
-                  <Image
-                    source={source}
-                    style={{ width: 200, height: 200, borderRadius: 7 }}
-                  />
-                  <Text
-                    style={{
-                      textAlign: "right",
-                      fontSize: 13,
-                      position: "absolute",
-                      right: 10,
-                      bottom: 7,
-                      color: "gray",
-                      marginTop: 5,
-                    }}
+                    ]}
                   >
-                    {formatTime(item?.timeStamp)}
-                  </Text>
-                </View>
-              </Pressable>
-            );
-          }
-          
-          
-        })}
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        textAlign: isSelected ? "right" : "left",
+                      }}
+                    >
+                      {item?.message}
+                    </Text>
+                    <Text
+                      style={{
+                        textAlign: "right",
+                        fontSize: 13,
+                        color: "gray",
+                        marginTop: 5,
+                      }}
+                    >
+                      {formatTime(item.timeStamp)}
+                    </Text>
+                  </Pressable>
+                );
+              }
 
-      </ScrollView>
+              if (item.messageType === "image") {
+                // const baseUrl = "F:/Programming/Mobile Development/React Native/Sujan Anand/realtime-chat/api/files/";
+                // const imageUrl = item.imageUrl.replace(/\\/g, '/');
+                // const filename = imageUrl.split("/").pop();
+                // const source = { uri: `${baseUrl}${filename}` };
+
+
+                const baseUrl ="/Users/sujananand/Build/messenger-project/api/files/";
+                const imageUrl = item.imageUrl;
+                const filename = imageUrl.split("/").pop();
+                const source = { uri: baseUrl + filename };
+                // const baseUrl = "/api/files/";
+                // const imageUrl = item.imageUrl.replace(/\\/g, "/");
+                // const filename = imageUrl.split("/").pop();
+                // const source =  `${baseUrl}${filename}` ;
+
+                console.log(source);
+
+                return (
+                  <Pressable
+                    key={index}
+                    style={[
+                      item?.senderId?._id === userId
+                        ? {
+                            alignSelf: "flex-end",
+                            backgroundColor: "#8bcccc",
+                            padding: 8,
+                            maxWidth: "60%",
+                            borderRadius: 7,
+                            margin: 10,
+                          }
+                        : {
+                            alignSelf: "flex-start",
+                            backgroundColor: "white",
+                            padding: 8,
+                            margin: 10,
+                            borderRadius: 7,
+                            maxWidth: "60%",
+                          },
+                    ]}
+                  >
+                    <View>
+                      <Image
+                        source={source}
+                        style={{ width: 200, height: 200, borderRadius: 7 }}
+                      />
+                      <Text
+                        style={{
+                          textAlign: "right",
+                          fontSize: 13,
+                          position: "absolute",
+                          right: 10,
+                          bottom: 7,
+                          color: "gray",
+                          marginTop: 5,
+                        }}
+                      >
+                        {formatTime(item?.timeStamp)}
+                      </Text>
+                    </View>
+                  </Pressable>
+                );
+              }
+            })}
+          </ScrollView>
+        </>
+      )}
 
       <View
         style={{
@@ -375,7 +418,7 @@ const MessageScreen = () => {
           paddingHorizontal: 10,
           paddingVertical: 10,
           //borderTopWidth: 1,
-          backgroundColor:"#8bcccc",
+          backgroundColor: "#8bcccc",
           marginBottom: showEmojiSelector ? 0 : 25,
         }}
       >
@@ -408,12 +451,7 @@ const MessageScreen = () => {
             marginHorizontal: 8,
           }}
         >
-          <Entypo
-            onPress={pickImage}
-            name="camera"
-            size={24}
-            color="gray"
-          />
+          <Entypo onPress={pickImage} name="camera" size={24} color="gray" />
 
           <Feather name="mic" size={24} color="gray" />
         </View>

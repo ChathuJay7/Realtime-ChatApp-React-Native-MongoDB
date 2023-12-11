@@ -40,6 +40,7 @@ const User = ({ item }) => {
   useEffect(() => {
     fetchFriendRequests();
     fetchUserFriends();
+    
   }, []);
 
   const fetchFriendRequests = async () => {
@@ -90,6 +91,7 @@ const User = ({ item }) => {
 
       }}
     >
+      
       <View>
         <Image
           style={{
